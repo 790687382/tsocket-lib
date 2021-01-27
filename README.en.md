@@ -1,36 +1,43 @@
 # TSocket
 
-#### Description
-自定义协议解析的socket通信库
+####Introduction
 
-#### Software Architecture
-Software architecture description
+It is a custom protocol analysis socket communication library by C#, using SocketAsyncEventArgs.
 
-#### Installation
+It allows you to customize the data protocol processing (such as TCP packet sticking processing), through a few simple calls, register a few event functions, you can carry out network communication without caring about the details of communication.
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
+Support TCP server, TCP client, UDP client and multicast
 
 
-#### Gitee Feature
 
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+####Origin
+
+Socket is often used to communicate with different devices, and the communication protocol of each device is different, which makes me feel very puzzled: is it impossible to write a common communication library for all protocol？
+
+I need a simple communication: simple code, simple call, good performance, business independent, thus development TSocketLib.
+
+
+
+####Instructions
+
+1. First of all, you need to define your application layer protocol packet base class. The subclass represents your data protocol object: see tsockettest\ ProtocolPackage.cs ；
+
+2. Define your protocol parsing/building class: see tsockettest\ ProtocolBuilder.cs ；
+
+The function of this class is:
+
+When sending data, you can encode it, such as adding the head or tail into the packet; of course, you can send it directly without encoding (send(....,encode = false ) function);
+
+When data is received, it can be decoded, such as TCP packet sticking. After that, publish your protocolpackage packet through event callback.
+
+3. Refer to tsockettest\ MyUDPClient.cs 、TSocketTest\ MyTCPServer.cs 、TSocketTest\ MyTCPClient.cs Establish network connection;
+
+Establishing a network connection is very simple, usually in 4 steps:
+
+1. Call the factory function tsocket\ SocketNetFactory.cs Create corresponding types of communication interfaces, including TCP client, TCP server and UDP client. The T params are "ProtocolPackage" and "ProtocolBuilder" ;
+
+2. Registration event function: it mainly includes network status event notification, exception event notification and data event notification;
+
+3. Call relevant methods to start the network, such as TCP service start monitoring, TCP client create connection, UDP create, etc.
+
+4. Next, it is very simple to call the relevant methods of the interface to send data and handle network events.
